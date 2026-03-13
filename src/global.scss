@@ -1,0 +1,21 @@
+:root {
+    color: #fff;
+    background: #000;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    overflow-y: hidden;
+
+    background: #302e2e url("./bg.png");
+    background-blend-mode: multiply;
+    // background-image: ;
+    background-size: cover;
+    background-position: center;
+}
+
+canvas {
+    mix-blend-mode: screen;
+}
