@@ -14,7 +14,7 @@ class MusicMouseHandler implements FrameHandlerObject {
     activate = () => {
         if (this.synth != null) return
         this.synth = new Synth()
-        this.synth.add_voices((a, d) => new SimpleVoice(a, d), 50)
+        this.synth.add_voices((a, d) => new SimpleVoice(a, d), 20)
         this.note_queue.bind(this.synth)
         this.step_t = this.next_step_t(this.synth)
         console.log("activated audio")
@@ -194,9 +194,13 @@ class MusicMouseHandler implements FrameHandlerObject {
 
         if (s == null) return
 
-        if (s.actx.currentTime + dt * 2 > this.step_t && this.playing) {
-            this.step_music(this.step_t, this.step_i, s, q, chord)
+        if (s.actx.currentTime - this.step_t > 3 * this.step_interval) {
             this.step_t = this.next_step_t(s)
+        }
+        if (s.actx.currentTime + dt * 2 > this.step_t && this.playing) {
+            this.step_t += this.step_interval
+            this.step_music(this.step_t, this.step_i, s, q, chord)
+            // this.step_t = this.next_step_t(s)
             this.step_i += 1
         }
     }
@@ -392,12 +396,15 @@ export function MusicMouse() {
     const handler = useMemo(() => new MusicMouseHandler(), [])
     return (<CanvasEngine>
         {[
-            ({ ctx, cnv: { width } }) => {
+            ({ ctx, cnv: { width, height } }) => {
                 ctx.fillStyle = "#777"
                 ctx.font = "20px monospace"
                 ctx.textAlign = "right"
                 ctx.textBaseline = "top"
                 ctx.fillText("musicmouse_web_clone", width - 10, 10)
+                ctx.textBaseline = "bottom"
+                ctx.font = "10px monospace"
+                ctx.fillText("https://github.com/SciDev5/musicmouse_web_clone", width - 10, height - 10)
             },
             handler,
         ]}
